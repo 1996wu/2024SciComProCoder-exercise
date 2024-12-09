@@ -6,6 +6,7 @@
 #include "integral.h"
 #include "matrix.h"
 #include "storage.h"
+#include "shape.h"
 
 template <typename T>
 using int1e = std::vector<T>;
@@ -122,6 +123,10 @@ int main() {
 
   auto x = st::Storage<dtype>(20);
   auto y = st::Storage(x, 10);
+  auto shape1 = at::Shape({3, 4, 5, 10});
+  std::cout << x.data_ptr() << std::endl;
+  std::cout << y.data_ptr() << std::endl;
+  std::cout << shape1 << std::endl;
 
   size_t count = 0;
   size_t max_count = 100;

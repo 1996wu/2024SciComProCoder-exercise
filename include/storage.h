@@ -2,6 +2,7 @@
 
 #include <cstring>
 #include <memory>
+
 #include "allocator.h"
 
 namespace st {
@@ -23,16 +24,20 @@ class Storage {
   T& operator[](size_t idx) { return dptr_[idx]; }
   size_t offset(void) const { return dptr_ - bptr_->data_; }
 
+  T* data_ptr(void) const { return bptr_->data_; };
+
  private:
   struct Vdata {
     size_t version_;
     T data_[1];
   };
 
-  std::shared_ptr<Vdata> bptr_; // base pointer
-  T* dptr_; // data pointer
+  // base pointer
+  std::shared_ptr<Vdata> bptr_;
+  // data pointer
+  T* dptr_;
 };
-}
+}  // namespace st
 
 namespace st {
 
