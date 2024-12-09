@@ -8,7 +8,7 @@
 #include <memory>
 
 #include "kernel.h"
-#include "tools.h"
+#include "utils/tools.h"
 
 template <typename T>
 class Vec {
@@ -122,7 +122,7 @@ class Matrix {
                 "Only support float, double");
   Matrix() = default;
 
-  Matrix(size_t m, size_t n) {
+  Matrix(size_t m, size_t n){
     _data = new T[n * m];
     _row = m;
     _col = n;
@@ -138,11 +138,7 @@ class Matrix {
     _row = m;
     _col = n;
     _size = m * n;
-    for (size_t i = 0; i < m; i++) {
-      for (size_t j = 0; j < n; j++) {
-        _data[i * n + j] = v;
-      }
-    }
+    std::fill_n(_data, _size, v);
   }
 
   Matrix(size_t m, size_t n, T *v) {
@@ -244,16 +240,29 @@ class Matrix {
     return *this;
   }
 
-  Matrix &operator=(const Matrix &&other) noexcept {
+  Matrix &operator=(Matrix &&other) noexcept {
+    if (this != &other) {
+      delete[] _data;
+      _row = other._row;
+      _col = other._col;
+      _size = other._size;
+      _data = other._data;
+      other._data = nullptr;
+    }
+
+    return *this;
+  }
+
+  Matrix &operator=(const Matrix &other) noexcept {
     if (this == &other) {
       return *this;
     }
+    delete[] _data;
     _row = other._row;
     _col = other._col;
     _size = other._size;
-    _data = other._data;
-    other._data = nullptr;
-
+    _data = new T[_size];
+    std::memcpy(_data, other._data, _size * sizeof(T));
     return *this;
   }
 
@@ -280,7 +289,7 @@ class Matrix {
     return (*this);
   }
 
-  Matrix operator-(const Matrix<T> &mat) const{
+  Matrix operator-(const Matrix<T> &mat) const {
     auto [M, N] = mat.size();
     assert(M == _row && N == _col);
     Matrix<T> result(M, N, 0.0);
@@ -301,19 +310,6 @@ class Matrix {
       }
     }
     return (*this);
-  }
-
-  Matrix &operator=(Matrix &&other) noexcept {
-    if (this != &other) {
-      delete[] _data;
-      _row = other._row;
-      _col = other._col;
-      _size = other._size;
-      _data = other._data;
-      other._data = nullptr;
-    }
-
-    return *this;
   }
 
   Matrix matmul(const Matrix<T> &mat) {

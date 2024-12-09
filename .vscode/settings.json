@@ -92,6 +92,7 @@
     "clangd.fallbackFlags": [
     "-std=c++17",
     "-I${workspaceFolder}/include",
+    // "-I${workspaceFolder}",
     "-I/home/zbwu/soft/intel/oneapi/mkl/latest/include",
     "-L/home/zbwu/soft/intel/oneapi/mkl/latest/lib/intel64",
     "-DUSE_MKL",

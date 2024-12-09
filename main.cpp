@@ -5,6 +5,7 @@
 
 #include "integral.h"
 #include "matrix.h"
+#include "storage.h"
 
 template <typename T>
 using int1e = std::vector<T>;
@@ -116,8 +117,11 @@ int main() {
 
   // step 4 construct density matrix D_mat
   auto D_init = Matrix<dtype>(sorb, sorb, core_int.data());
-  auto D_old = D_init.copy();
+  auto D_old = std::move(D_init);
   std::cout << D_old.data() << std::endl;
+
+  auto x = st::Storage<dtype>(20);
+  auto y = st::Storage(x, 10);
 
   size_t count = 0;
   size_t max_count = 100;
